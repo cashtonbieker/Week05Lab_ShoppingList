@@ -18,7 +18,9 @@
         
         <h2>Hello ${user}</h2>
         <br>
-        <a href="shoppinglist?action=logout">Log Out</a>
+        <a href="<c:url value='/shoppinglist'>
+               <c:param name='action' value='logout'></c:param>
+           </c:url>">Log Out</a>
         
         <h3>Add item:</h3>
         <form action="" method="POST">
@@ -30,9 +32,10 @@
         <form action="" method="POST">
             <ul>
                 <c:forEach items="${items}" var="item">
-                <li><input type="radio" name="item" value="${item}"/>${item}</li>
-            </ul>
+                <li><input type="radio" name="listItem" value="${item}"/>${item}</li>
                 </c:forEach>
+            </ul>
+                
                 <input type="submit" value="Delete">
                 <input type="hidden" name="action" value="delete">
                 

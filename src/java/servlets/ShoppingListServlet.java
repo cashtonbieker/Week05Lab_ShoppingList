@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
  */
 
 public class ShoppingListServlet extends HttpServlet {
+    
 
 
     @Override
@@ -25,15 +26,27 @@ public class ShoppingListServlet extends HttpServlet {
         
         String user = (String) session.getAttribute("user");
         
+        String action = request.getParameter("action");
+        
+        if (action != null){
+            if (action.equals("logout")){
+                session.invalidate();
+                session = request.getSession();
+                getServletContext().getRequestDispatcher("/WEB-INF/register.jsp").forward(request, response);
+
+            }
+        }
+        
         if (user == null){
             getServletContext().getRequestDispatcher("/WEB-INF/register.jsp").forward(request, response);
         }
         
-        
         request.setAttribute("user", user);
+        
+        
+        ArrayList<String> items = (ArrayList<String>) session.getAttribute("items");
             
-        
-        
+        request.setAttribute("items", items);
         
         getServletContext().getRequestDispatcher("/WEB-INF/shoppinglist.jsp").forward(request, response);
     }
@@ -46,8 +59,6 @@ public class ShoppingListServlet extends HttpServlet {
         
         String action = request.getParameter("action");
         
-        
-        
         if (action.equals("register")){
             String user = request.getParameter("user");
             
@@ -56,21 +67,48 @@ public class ShoppingListServlet extends HttpServlet {
         }
         
         if (action.equals("add")){
-            ArrayList<String> items = new ArrayList<>();
+            
             
             String item = request.getParameter("item");
             
+            if (item == null){
+                getServletContext().getRequestDispatcher("/WEB-INF/shoppinglist.jsp").forward(request, response);
+            }
+            
+            ArrayList<String> items = (ArrayList<String>) session.getAttribute("items");
+            
+            if(items == null){
+                items = new ArrayList<> ();
+            }
+            
+            items.add(item);
+            
+            session.setAttribute("items", items);
+            
+            getServletContext().getRequestDispatcher("/WEB-INF/shoppinglist.jsp").forward(request, response);
             
         }
         
         if (action.equals("delete")){
+            String listItem = request.getParameter("listItem");
+            
+            if (listItem == null){
+                getServletContext().getRequestDispatcher("/WEB-INF/shoppinglist.jsp").forward(request, response);
+            }
+            
+            ArrayList<String> items = (ArrayList<String>) session.getAttribute("items");
+            
+            if(items == null){
+                items = new ArrayList<> ();
+            }
+            
+            for (int i = 0; i < items.size(); i++){
+                if (items.get(i).equals(listItem)){
+                    items.remove(i);
+                }
+            }
+            getServletContext().getRequestDispatcher("/WEB-INF/shoppinglist.jsp").forward(request, response);
             
         }
-        
-        if (action.equals("logout")){
-            
-        }
-        
-//        getServletContext().getRequestDispatcher("/WEB-INF/shoppinglist.jsp").forward(request, response);
     }
 }
